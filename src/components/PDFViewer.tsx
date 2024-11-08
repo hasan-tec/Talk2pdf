@@ -31,24 +31,11 @@ export default function PDFViewer({ file }: PDFViewerProps) {
     }
   }, [file]);
 
-  if (!file) {
-    return (
-      <div className="h-full flex flex-col">
-        <div className="flex-1 flex items-center justify-center bg-gray-50 text-gray-500">
-          <div className="text-center">
-            <p className="mb-2">Upload a PDF to get started</p>
-            <p className="text-sm text-gray-400">Your document will appear here</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="h-full flex flex-col bg-gray-50">
       <div className="sticky top-0 z-10 flex items-center justify-between gap-2 p-3 bg-white border-b">
         <div className="text-sm font-medium text-gray-600">
-          {file.name}
+          {file?.name}
         </div>
         <div className="flex gap-2">
           <button
