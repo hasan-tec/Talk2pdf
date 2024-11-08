@@ -4,7 +4,8 @@ import { ClerkProvider } from '@clerk/clerk-react';
 import App from './App.tsx';
 import './index.css';
 
-const clerkPubKey = 'pk_test_Zm9uZC13aGlwcGV0LTUzLmNsZXJrLmFjY291bnRzLmRldiQ';
+const clerkPubKey = import.meta.env.VITE_CLERK_PUB_KEY;
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const API_KEY = 'AIzaSyD6FVqyNDXEQnbyfgUHGZk2vQFI0MgDoo4';
+const API_KEY = import.meta.env.VITE_API_KEY;
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 export const askQuestion = async (question: string, context: string) => {
