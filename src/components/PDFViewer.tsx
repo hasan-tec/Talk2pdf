@@ -32,22 +32,22 @@ export default function PDFViewer({ file }: PDFViewerProps) {
   }, [file]);
 
   return (
-    <div className="h-full flex flex-col bg-gray-50">
-      <div className="sticky top-0 z-10 flex items-center justify-between gap-2 p-3 bg-white border-b">
-        <div className="text-sm font-medium text-gray-600">
+    <div className="h-full flex flex-col bg-[#0A0A0A] text-white">
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-2 p-3 bg-[#1A1A1A] border-b border-[#2A2A2A]">
+        <div className="text-sm font-medium text-gray-300">
           {file?.name}
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setScale(s => s + 0.1)}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-gray-300 hover:bg-[#2A2A2A] rounded-lg transition-colors"
             title="Zoom In"
           >
             <ZoomIn className="w-5 h-5" />
           </button>
           <button
             onClick={() => setScale(s => Math.max(0.5, s - 0.1))}
-            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+            className="p-2 text-gray-300 hover:bg-[#2A2A2A] rounded-lg transition-colors"
             title="Zoom Out"
           >
             <ZoomOut className="w-5 h-5" />
@@ -73,7 +73,7 @@ export default function PDFViewer({ file }: PDFViewerProps) {
               key={`page_${index + 1}`}
               pageNumber={index + 1}
               scale={scale}
-              className="mb-4 shadow-lg bg-white"
+              className="mb-4 shadow-lg bg-[#1A1A1A]"
               renderTextLayer={true}
               renderAnnotationLayer={true}
             />
