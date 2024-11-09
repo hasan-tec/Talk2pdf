@@ -3,6 +3,7 @@ import { Loader2, LogOut, User, X, Upload } from 'lucide-react';
 import { SignIn, SignedIn, SignedOut, useUser, useClerk } from '@clerk/clerk-react';
 import PDFViewer from './components/PDFViewer';
 import ChatPanel from './components/ChatPanel';
+import QuizPanel from './components/QuizPanel';
 import { extractTextFromPDF } from './lib/gemini';
 import { supabase } from './lib/supabase';
 import { Button } from "./components/ui/button"
@@ -24,6 +25,7 @@ export default function Component() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showUploadPopup, setShowUploadPopup] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [mode, setMode] = useState<'chat' | 'quiz'>('chat');
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -115,8 +117,27 @@ export default function Component() {
                   </CardContent>
                 </Card>
                 <Card className="overflow-hidden">
-                  <CardContent className="p-0 h-full">
-                    <ChatPanel pdfContent={pdfContent} />
+                  <CardContent className="p-0 h-full flex flex-col">
+                    <div className="flex justify-center p-2 bg-gray-100 border-b">
+                      <Button
+                        variant={mode === 'chat' ? 'default' : 'outline'}
+                        onClick={() => setMode('chat')}
+                        className="mr-2"
+                      >
+                        Chat
+                      </Button>
+                      <Button
+                        variant={mode === 'quiz' ? 'default' : 'outline'}
+                        onClick={() => setMode('quiz')}
+                      >
+                        Quiz
+                      </Button>
+                    </div>
+                    {mode === 'chat' ? (
+                      <ChatPanel pdfContent={pdfContent} />
+                    ) : (
+                      <QuizPanel pdfContent={pdfContent} />
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -126,7 +147,7 @@ export default function Component() {
                   <CardContent className="flex flex-col items-center p-6">
                     <Upload className="h-12 w-12 text-gray-400 mb-4" />
                     <p className="text-lg font-medium text-center mb-2">No PDF uploaded yet</p>
-                    <p className="text-sm text-gray-500 text-center mb-4">Upload a PDF to start asking questions</p>
+                    <p className="text-sm text-gray-500 text-center mb-4">Upload a PDF to start asking questions or take a quiz</p>
                     <Button onClick={() => setShowUploadPopup(true)}>
                       Upload PDF
                     </Button>
