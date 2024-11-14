@@ -1,9 +1,10 @@
-
+import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, FileText, Zap, MessageSquare } from 'lucide-react';
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Card, CardContent } from "./ui/card";
+import { SignInButton, SignedIn, SignedOut } from '@clerk/clerk-react';
 
 interface LandingPageProps {
   onGetStarted: () => void;
@@ -12,9 +13,40 @@ interface LandingPageProps {
 export default function LandingPage({ onGetStarted }: LandingPageProps) {
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white overflow-x-hidden">
-      
+      {/* Navbar */}
+      <nav className="fixed top-0 left-0 right-0 bg-[#1A1A1A] border-b border-[#2A2A2A] px-4 py-3 z-50">
+        <div className="max-w-[1200px] mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-8">
+            <h1 className="text-xl font-bold">PDF Q&A Assistant</h1>
+            <div className="hidden md:flex items-center gap-6">
+              <a href="#features" className="text-gray-300 hover:text-white">Features</a>
+              <a href="#tools" className="text-gray-300 hover:text-white">Tools</a>
+              <a href="#faq" className="text-gray-300 hover:text-white">FAQ</a>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button variant="ghost">
+                  Sign In
+                </Button>
+              </SignInButton>
+              <Button className="bg-blue-600 hover:bg-blue-700" onClick={onGetStarted}>
+                Get Started
+              </Button>
+            </SignedOut>
+            <SignedIn>
+              <Button variant="ghost" onClick={onGetStarted}>
+                Dashboard
+              </Button>
+            </SignedIn>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className="relative px-4 pt-24 pb-20 overflow-hidden">
+      <section className="relative px-4 pt-24 pb-20 overflow-hidden mt-16">
         <div className="max-w-[1200px] mx-auto text-center">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -29,11 +61,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             Summaries in Seconds
           </motion.h1>
           <div className="flex justify-center gap-4 mb-16">
-            <Input
-              type="email"
-              placeholder="Enter your email..."
-              className="max-w-[280px] h-12 bg-[#1A1A1A] border-[#2A2A2A] rounded-lg"
-            />
+            
             <Button className="h-12 px-6 bg-blue-600 hover:bg-blue-700 rounded-lg" onClick={onGetStarted}>
               Get Started
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -71,7 +99,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Tools Section */}
-      <section className="px-4 py-24">
+      <section id="tools" className="px-4 py-24">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-3xl font-bold text-center mb-16">The right tools just for you...</h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -93,7 +121,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* AI Tools Grid */}
-      <section className="px-4 py-24 bg-[#0D0D0D]">
+      <section id="features" className="px-4 py-24 bg-[#0D0D0D]">
         <div className="max-w-[1200px] mx-auto text-center">
           <h2 className="text-3xl font-bold mb-16">
             40+ Free AI-Powered Tools to Help
@@ -120,7 +148,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* FAQ Section */}
-      <section className="px-4 py-24">
+      <section id="faq" className="px-4 py-24">
         <div className="max-w-[1200px] mx-auto text-center">
           <h2 className="text-3xl font-bold mb-2">You asked,</h2>
           <p className="text-xl text-gray-400 mb-16">We answer</p>
@@ -152,7 +180,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             <br />
             professional life easier with
             <br />
-            AskYourPDF
+            PDF Q&A Assistant
           </h2>
           <Button className="bg-blue-600 hover:bg-blue-700" onClick={onGetStarted}>
             Get Started Now
@@ -180,9 +208,9 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             ))}
           </div>
           <div className="mt-16 flex justify-between items-center">
-            <p className="text-sm text-gray-400">© 2024 AskYourPDF. All rights reserved.</p>
+            <p className="text-sm text-gray-400">© 2024 PDF Q&A Assistant. All rights reserved.</p>
             <img
-              src="/qr-code.png"
+              src="/placeholder.svg?height=96&width=96"
               alt="QR Code"
               className="w-24 h-24 opacity-80"
             />
