@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 import { ArrowRight, FileText, Zap, MessageSquare } from 'lucide-react';
 import { Button } from "./ui/button";
@@ -12,6 +12,7 @@ interface LandingPageProps {
 export default function LandingPage({ onGetStarted }: LandingPageProps) {
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-white overflow-x-hidden">
+      
       {/* Hero Section */}
       <section className="relative px-4 pt-24 pb-20 overflow-hidden">
         <div className="max-w-[1200px] mx-auto text-center">

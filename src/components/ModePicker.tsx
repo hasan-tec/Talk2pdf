@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { BookOpen, Brain } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';

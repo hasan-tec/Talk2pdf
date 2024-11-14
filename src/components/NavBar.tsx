@@ -1,6 +1,7 @@
 import React from 'react';
-import { SignInButton, SignedIn, SignedOut, useUser, useClerk } from '@clerk/clerk-react';
-import { LogOut, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { User, Upload } from 'lucide-react';
+import { useUser, useClerk } from '@clerk/clerk-react';
 import { Button } from "./ui/button";
 import {
   Sheet,
@@ -11,82 +12,68 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 
-const Navbar = ({ onDashboard }) => {
+interface NavbarProps {
+  onUploadClick: () => void;
+}
+
+export default function Navbar({ onUploadClick }: NavbarProps) {
   const { user } = useUser();
   const { signOut } = useClerk();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-[#1A1A1A] border-b border-[#2A2A2A] px-4 py-3 z-50">
-      <div className="max-w-[1200px] mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <h1 className="text-xl font-bold">AskYourPDF</h1>
-          <div className="hidden md:flex items-center gap-6">
-            <a href="#features" className="text-gray-300 hover:text-white">Features</a>
-            <a href="#tools" className="text-gray-300 hover:text-white">Tools</a>
-            <a href="#faq" className="text-gray-300 hover:text-white">FAQ</a>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          <SignedIn>
-            {onDashboard ? (
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full">
-                    <User className="h-5 w-5" />
+    <header className="bg-[#1A1A1A] border-b border-[#2A2A2A] px-4 py-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <Link to="/" className="text-xl font-bold">PDF Q&A Assistant</Link>
+        <nav>
+          <ul className="flex items-center space-x-4">
+            <li>
+              <Link to="/" className="text-gray-300 hover:text-white">Home</Link>
+            </li>
+            <li>
+              <Link to="/about" className="text-gray-300 hover:text-white">About</Link>
+            </li>
+            <li>
+              <Link to="/contact" className="text-gray-300 hover:text-white">Contact</Link>
+            </li>
+          </ul>
+        </nav>
+        <div className="flex items-center gap-2">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <User className="h-5 w-5" />
+                <span className="sr-only">Open user menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Profile</SheetTitle>
+                <SheetDescription>
+                  <div className="py-4">
+                    <p className="font-medium">Name: {user?.fullName}</p>
+                    <p className="text-sm text-gray-400">Email: {user?.primaryEmailAddress?.emailAddress}</p>
+                  </div>
+                  <Button
+                    onClick={() => signOut()}
+                    variant="destructive"
+                    className="w-full mt-4"
+                  >
+                    Sign Out
                   </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Profile</SheetTitle>
-                    <SheetDescription>
-                      <div className="py-4">
-                        <p className="font-medium">Name: {user?.fullName}</p>
-                        <p className="text-sm text-gray-400">Email: {user?.primaryEmailAddress?.emailAddress}</p>
-                      </div>
-                      <Button
-                        onClick={() => signOut()}
-                        variant="destructive"
-                        className="w-full mt-4"
-                      >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        Sign Out
-                      </Button>
-                    </SheetDescription>
-                  </SheetHeader>
-                </SheetContent>
-              </Sheet>
-            ) : (
-              <>
-                <Button variant="ghost" onClick={onDashboard}>
-                  Dashboard
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => signOut()}
-                >
-                  Sign Out
-                </Button>
-              </>
-            )}
-          </SignedIn>
-          
-          <SignedOut>
-            <SignInButton mode="modal">
-              <Button variant="ghost">
-                Sign In
-              </Button>
-            </SignInButton>
-            <SignInButton mode="modal">
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                Get Started
-              </Button>
-            </SignInButton>
-          </SignedOut>
+                </SheetDescription>
+              </SheetHeader>
+            </SheetContent>
+          </Sheet>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onUploadClick}
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            Upload PDF
+          </Button>
         </div>
       </div>
-    </nav>
+    </header>
   );
-};
-
-export default Navbar;
+}

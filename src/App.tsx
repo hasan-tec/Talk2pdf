@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2, LogOut, User, X, Upload } from 'lucide-react';
+import { Loader2, LogOut, User, X, Upload, Home } from 'lucide-react';
 import { SignIn, SignedIn, SignedOut, useUser, useClerk } from '@clerk/clerk-react';
 import PDFViewer from './components/PDFViewer';
 import ChatPanel from './components/ChatPanel';
@@ -10,8 +10,6 @@ import { Button } from "./components/ui/button"
 import { Card, CardContent } from "./components/ui/card"
 import ModePicker from './components/ModePicker';
 import QuizPanel from './components/QuizPanel';
-// At the top of App.tsx, add any missing icons to your import:
-import { BookOpen, Brain, Home } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -37,7 +35,7 @@ export default function App() {
     if (!selectedFile || !user) return;
 
     setFile(selectedFile);
-    setInteractionMode(null); // Add this line
+    setInteractionMode(null);
     setIsProcessing(true);
     setShowUploadPopup(false);
 
@@ -66,6 +64,10 @@ export default function App() {
       setShowLanding(false);
     }
   }, [user]);
+
+  const handleHome = () => {
+    setInteractionMode(null);
+  };
 
   if (showLanding) {
     return <LandingPage onGetStarted={() => setShowLanding(false)} />;
@@ -126,45 +128,45 @@ export default function App() {
         <main className="flex-1 overflow-hidden">
           <div className="h-full max-w-7xl mx-auto p-4">
           {file ? (
-                <>
-                  {!interactionMode ? (
-                    <ModePicker onModeSelect={setInteractionMode} />
-                  ) : (
-                    interactionMode === 'chat' ? (
-                      <div className="h-[calc(100vh-6rem)] grid gap-4 grid-cols-1 lg:grid-cols-2">
-                        <Card className="overflow-hidden bg-[#1A1A1A] border-[#2A2A2A]">
-                          <CardContent className="p-0 h-full">
-                            <PDFViewer file={file} />
-                          </CardContent>
-                        </Card>
-                        <Card className="overflow-hidden bg-[#1A1A1A] border-[#2A2A2A]">
-                          <CardContent className="p-0 h-full">
-                            <ChatPanel pdfContent={pdfContent} />
-                          </CardContent>
-                        </Card>
-                      </div>
-                    ) : (
-                      <QuizPanel 
-                        pdfContent={pdfContent} 
-                        onExit={() => setInteractionMode(null)} 
-                      />
-                    )
-                  )}
-                </>
-            ) : (
-              <div className="h-full flex items-center justify-center">
-                <Card className="w-full max-w-md bg-[#1A1A1A] border-[#2A2A2A]">
-                  <CardContent className="flex flex-col items-center p-6">
-                    <Upload className="h-12 w-12 text-gray-400 mb-4" />
-                    <p className="text-lg font-medium text-center mb-2">No PDF uploaded yet</p>
-                    <p className="text-sm text-gray-400 text-center mb-4">Upload a PDF to start asking questions</p>
-                    <Button onClick={() => setShowUploadPopup(true)}>
-                      Upload PDF
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+            <>
+              {!interactionMode ? (
+                <ModePicker onModeSelect={setInteractionMode} />
+              ) : (
+                interactionMode === 'chat' ? (
+                  <div className="h-[calc(100vh-6rem)] grid gap-4 grid-cols-1 lg:grid-cols-2">
+                    <Card className="overflow-hidden bg-[#1A1A1A] border-[#2A2A2A]">
+                      <CardContent className="p-0 h-full">
+                        <PDFViewer file={file} />
+                      </CardContent>
+                    </Card>
+                    <Card className="overflow-hidden bg-[#1A1A1A] border-[#2A2A2A]">
+                      <CardContent className="p-0 h-full">
+                        <ChatPanel pdfContent={pdfContent} onHome={handleHome} />
+                      </CardContent>
+                    </Card>
+                  </div>
+                ) : (
+                  <QuizPanel 
+                    pdfContent={pdfContent} 
+                    onExit={() => setInteractionMode(null)} 
+                  />
+                )
+              )}
+            </>
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <Card className="w-full max-w-md bg-[#1A1A1A] border-[#2A2A2A]">
+                <CardContent className="flex flex-col items-center p-6">
+                  <Upload className="h-12 w-12 text-gray-400 mb-4" />
+                  <p className="text-lg font-medium text-center mb-2">No PDF uploaded yet</p>
+                  <p className="text-sm text-gray-400 text-center mb-4">Upload a PDF to start asking questions</p>
+                  <Button onClick={() => setShowUploadPopup(true)}>
+                    Upload PDF
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
           </div>
         </main>
 

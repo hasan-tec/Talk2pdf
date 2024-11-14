@@ -1,6 +1,10 @@
-import React from 'react';
-import { Send, Loader2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Send, Loader2, Home } from 'lucide-react';
 import { askQuestion } from '../lib/gemini';
+import { Button } from "./ui/button";
+import { Card, CardContent } from "./ui/card";
+import { Input } from "./ui/input";
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -9,22 +13,21 @@ interface Message {
 
 interface ChatPanelProps {
   pdfContent: string | null;
+  onHome: () => void;
 }
 
-export default function ChatPanel({ pdfContent }: ChatPanelProps) {
-  const [messages, setMessages] = React.useState<Message[]>([]);
-  const [input, setInput] = React.useState('');
-  const [isLoading, setIsLoading] = React.useState(false);
-  const messagesEndRef = React.useRef<HTMLDivElement>(null);
-  const chatContainerRef = React.useRef<HTMLDivElement>(null);
+export default function ChatPanel({ pdfContent, onHome }: ChatPanelProps) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
@@ -52,9 +55,14 @@ export default function ChatPanel({ pdfContent }: ChatPanelProps) {
 
   return (
     <div className="flex flex-col h-full bg-[#0A0A0A] text-white">
-      <div className="p-4 border-b border-[#2A2A2A] bg-[#1A1A1A]">
-        <h2 className="text-lg font-semibold text-white">Chat</h2>
-        <p className="text-sm text-gray-400">Ask questions about your PDF document</p>
+      <div className="p-4 border-b border-[#2A2A2A] bg-[#1A1A1A] flex justify-between items-center">
+        <div>
+          <h2 className="text-lg font-semibold text-white">Chat</h2>
+          <p className="text-sm text-gray-400">Ask questions about your PDF document</p>
+        </div>
+        <Button variant="ghost" onClick={onHome}>
+          <Home className="h-5 w-5" />
+        </Button>
       </div>
 
       <div 
@@ -67,22 +75,26 @@ export default function ChatPanel({ pdfContent }: ChatPanelProps) {
           </div>
         ) : (
           messages.map((message, index) => (
-            <div
+            <Card
               key={index}
-              className={`flex ${
-                message.role === 'user' ? 'justify-end' : 'justify-start'
+              className={`max-w-[80%] ${
+                message.role === 'user' ? 'ml-auto bg-blue-600' : 'mr-auto bg-[#1A1A1A] border-[#2A2A2A]'
               }`}
             >
-              <div
-                className={`max-w-[80%] rounded-lg p-3 ${
-                  message.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-[#1A1A1A] text-gray-300 border border-[#2A2A2A]'
-                }`}
-              >
-                {message.content}
-              </div>
-            </div>
+              <CardContent className="p-3">
+                <ReactMarkdown
+                  components={{
+                    p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                    strong: ({ children }) => <span className="font-bold">{children}</span>,
+                    ul: ({ children }) => <ul className="list-disc pl-4 mb-2">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal pl-4 mb-2">{children}</ol>,
+                    li: ({ children }) => <li className="mb-1">{children}</li>,
+                  }}
+                >
+                  {message.content}
+                </ReactMarkdown>
+              </CardContent>
+            </Card>
           ))
         )}
         <div ref={messagesEndRef} />
@@ -90,30 +102,32 @@ export default function ChatPanel({ pdfContent }: ChatPanelProps) {
 
       <form
         onSubmit={handleSubmit}
-        className="border-t border-[#2A2A2A] p-4 flex gap-2 items-center bg-[#1A1A1A]"
+        className="border-t border-[#2A2A2A] p-4 bg-[#1A1A1A]"
       >
-        <input
-          type="text"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder={pdfContent ? "Ask a question about the PDF..." : "Upload a PDF first"}
-          disabled={!pdfContent || isLoading}
-          className="flex-1 px-4 py-2 bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg text-white placeholder-gray-400 
-            focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent
-            disabled:bg-[#1A1A1A] disabled:text-gray-500"
-        />
-        <button
-          type="submit"
-          disabled={!pdfContent || isLoading}
-          className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 
-            disabled:cursor-not-allowed transition-colors"
-        >
-          {isLoading ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : (
-            <Send className="w-5 h-5" />
-          )}
-        </button>
+        <div className="flex gap-2">
+          <Input
+            type="text"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder={pdfContent ? "Ask a question about the PDF..." : "Upload a PDF first"}
+            disabled={!pdfContent || isLoading}
+            className="flex-1 bg-[#0A0A0A] border-[#2A2A2A] text-white placeholder-gray-400 
+              focus:ring-2 focus:ring-blue-600 focus:border-transparent
+              disabled:bg-[#1A1A1A] disabled:text-gray-500"
+          />
+          <Button
+            type="submit"
+            disabled={!pdfContent || isLoading}
+            className="bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 
+              disabled:cursor-not-allowed transition-colors"
+          >
+            {isLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Send className="w-5 h-5" />
+            )}
+          </Button>
+        </div>
       </form>
     </div>
   );
